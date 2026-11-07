@@ -2,8 +2,9 @@
 
 > **K Explore — Web Designing Challenge**  
 > **Task Title:** Design and Develop a Responsive Event Management Website  
-> **Live Demo:** [Deploy to GitHub Pages / Vercel / Netlify](#-deployment-guide)  
-> **Repository:** [https://github.com/your-username/eventpulse-website](https://github.com/your-username/eventpulse-website)
+> **Live Demo:** [Deploy https://eventpulse-website.vercel.app/](https://eventpulse-website.vercel.app/)  
+> **Repository:** [https://github.com/mbarsha380-stack/eventpulse-website](https://github.com/mbarsha380-stack/eventpulse-website)
+**Developed by Barsha Mahato**
 
 ---
 

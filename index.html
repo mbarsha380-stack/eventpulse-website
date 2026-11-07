@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPulse | Modern Responsive Event Management Platform</title>
+    <meta name="description" content="Discover, explore, and register for premier conferences, music festivals, tech summits, and workshops with EventPulse.">
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Canvas Confetti for Celebration Animation -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-auto"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 glass-nav transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Brand Logo -->
+                <a href="#home" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform duration-300">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Event<span class="text-indigo-600 dark:text-indigo-400">Pulse</span></span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 uppercase tracking-wider">v2.0</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 -mt-0.5 font-medium">Explore & Experience</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="text-sm font-semibold text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition">Home</a>
+                    <a href="#featured" class="text-sm font-semibold text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition">Featured</a>
+                    <a href="#explore-events" class="text-sm font-semibold text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition">Browse Events</a>
+                    <a href="#how-it-works" class="text-sm font-semibold text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition">How It Works</a>
+                </nav>
+
+                <!-- Right Side Controls (Theme, Bookings, Hamburger) -->
+                <div class="flex items-center gap-3">
+                    
+                    <!-- Dark / Light Mode Toggle Button -->
+                    <button id="theme-toggle-btn" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Toggle theme">
+                        <i id="theme-icon" data-lucide="moon" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- My Bookings Button -->
+                    <button id="my-bookings-btn" class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-sm font-semibold relative">
+                        <i data-lucide="ticket" class="w-4 h-4 text-indigo-500"></i>
+                        <span>My Bookings</span>
+                        <span id="bookings-badge" class="hidden ml-1 px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-600 text-white">0</span>
+                    </button>
+
+                    <!-- Primary CTA -->
+                    <a href="#explore-events" class="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-md shadow-indigo-600/25 transition">
+                        <span>Get Passes</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+
+                    <!-- Mobile Menu Hamburger Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Toggle mobile menu">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-4 pt-3 pb-6 space-y-3">
+            <a href="#home" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Home</a>
+            <a href="#featured" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Featured Events</a>
+            <a href="#explore-events" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Browse All Events</a>
+            <a href="#how-it-works" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">How It Works</a>
+            <div class="pt-2">
+                <button id="mobile-my-bookings-btn" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-sm">
+                    <span class="flex items-center gap-2">
+                        <i data-lucide="ticket" class="w-4 h-4 text-indigo-500"></i> My Booked Tickets
+                    </span>
+                    <span id="mobile-bookings-badge" class="hidden px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-600 text-white">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1">
+        <!-- ====================================================================
+             Hero Section
+             ==================================================================== -->
+        <section id="home" class="relative pt-12 pb-20 lg:pt-20 lg:pb-32 hero-gradient overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-3xl mx-auto">
+                    
+                    <!-- Pill Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-indigo-600 pulse-indicator"></span>
+                        The Ultimate Event Discovery Platform
+                    </div>
+
+                    <!-- Main Headline -->
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-6">
+                        Discover, Connect & Experience <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Unforgettable</span> Events
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
+                        From flagship artificial intelligence summits and music festivals to immersive coding workshops and executive conclaves. Browse live schedules, track seats in real-time, and reserve your tickets instantly.
+                    </p>
+
+                    <!-- Hero Quick Search Card -->
+                    <div class="glass-card p-3 sm:p-4 rounded-2xl shadow-xl max-w-3xl mx-auto border border-slate-200/90 dark:border-slate-800/90">
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                            
+                            <!-- Search Query Input -->
+                            <div class="sm:col-span-5 relative">
+                                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                                <input type="text" id="hero-search-input" placeholder="Search event title, speaker, city..." class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white placeholder:text-slate-400">
+                            </div>
+
+                            <!-- Category Dropdown -->
+                            <div class="sm:col-span-4 relative">
+                                <i data-lucide="layers" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                                <select id="hero-category-select" class="w-full pl-10 pr-8 py-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white appearance-none cursor-pointer">
+                                    <option value="All">All Categories</option>
+                                    <option value="Tech & AI">Tech & AI</option>
+                                    <option value="Music & Festivals">Music & Festivals</option>
+                                    <option value="Business & Startups">Business & Startups</option>
+                                    <option value="Design & Creative">Design & Creative</option>
+                                    <option value="Health & Fitness">Health & Fitness</option>
+                                    <option value="Workshops & Learning">Workshops & Learning</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+
+                            <!-- Hero Search CTA -->
+                            <div class="sm:col-span-3">
+                                <button id="hero-search-btn" class="w-full py-3 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-600/30 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    <span>Find Events</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Stats Row -->
+                    <div class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-slate-200/60 dark:border-slate-800/60 max-w-3xl mx-auto">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">45,000+</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Tickets Reserved</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">320+</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Premier Events</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">99.8%</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Attendee Rating</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400">16+</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Metropolitan Hubs</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             Featured Events Section (With Live Countdowns)
+             ==================================================================== -->
+        <section id="featured" class="py-16 bg-white dark:bg-slate-900/60 border-y border-slate-200/80 dark:border-slate-800/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                            <i data-lucide="flame" class="w-4 h-4 text-orange-500"></i> Trending This Month
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Featured Global Events</h2>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">High-demand conferences and summits with live countdown timers.</p>
+                    </div>
+
+                    <a href="#explore-events" class="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition">
+                        <span>View complete catalog</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <!-- Featured Events Grid (Injected by app.js) -->
+                <div id="featured-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Dynamic Featured Cards -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             Main Browse & Filter Section
+             ==================================================================== -->
+        <section id="explore-events" class="py-16 lg:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Header -->
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Explore Upcoming Events</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-2">Filter by domain, search by topic, sort by date, or view your saved bookmarks.</p>
+                </div>
+
+                <!-- Category Filters Bar -->
+                <div id="category-filters" class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none justify-start lg:justify-center">
+                    <button data-category="All" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-indigo-600 text-white shadow-md shadow-indigo-600/25 whitespace-nowrap">
+                        All Categories
+                    </button>
+                    <button data-category="Tech & AI" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+                        Tech & AI
+                    </button>
+                    <button data-category="Music & Festivals" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+                        Music & Festivals
+                    </button>
+                    <button data-category="Business & Startups" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+                        Business & Startups
+                    </button>
+                    <button data-category="Design & Creative" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+                        Design & Creative
+                    </button>
+                    <button data-category="Health & Fitness" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+                        Health & Fitness
+                    </button>
+                    <button data-category="Workshops & Learning" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap">
+                        Workshops & Learning
+                    </button>
+                </div>
+
+                <!-- Secondary Filter & Search Controls Bar -->
+                <div class="glass-card p-4 rounded-2xl mb-8 border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                    
+                    <!-- Search Input with Clear Action -->
+                    <div class="w-full md:w-80 relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="search-input" placeholder="Search events, cities, tags..." class="w-full pl-10 pr-9 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white">
+                        <button id="clear-search-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Right Controls (Tab Toggles, Price, Sort) -->
+                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                        
+                        <!-- Tab switcher: All vs Favorites -->
+                        <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-semibold">
+                            <button id="tab-all-events" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white transition">
+                                All Events
+                            </button>
+                            <button id="tab-favorites" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5">
+                                <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i>
+                                <span>Favorites</span>
+                                <span id="fav-count-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-500 text-white">0</span>
+                            </button>
+                        </div>
+
+                        <!-- Price Filter -->
+                        <div class="relative">
+                            <select id="price-filter" class="pl-3 pr-8 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white appearance-none cursor-pointer">
+                                <option value="all">All Prices</option>
+                                <option value="free">Free Only</option>
+                                <option value="paid">Paid Events</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        </div>
+
+                        <!-- Sort By -->
+                        <div class="relative">
+                            <select id="sort-filter" class="pl-3 pr-8 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white appearance-none cursor-pointer">
+                                <option value="date-asc">Date: Upcoming First</option>
+                                <option value="date-desc">Date: Latest First</option>
+                                <option value="popularity">Most Popular</option>
+                                <option value="price-asc">Price: Low to High</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Live Results Count Bar -->
+                <div class="flex items-center justify-between mb-6 px-1">
+                    <span id="events-count-label" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Loading events...</span>
+                </div>
+
+                <!-- Main Events Cards Grid -->
+                <div id="events-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Dynamically populated by app.js -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden py-16 text-center max-w-md mx-auto">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-500 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="search-x" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">No matching events found</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">We couldn't find any events matching your selected category or search filters.</p>
+                    <button id="reset-filters-btn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-sm">
+                        Reset All Filters
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             How It Works Section
+             ==================================================================== -->
+        <section id="how-it-works" class="py-16 bg-slate-100/70 dark:bg-slate-900/40 border-y border-slate-200/80 dark:border-slate-800/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-2xl mx-auto mb-14">
+                    <div class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+                        Seamless Experience
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">How EventPulse Works</h2>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Book premier events and access verified tickets in three simple steps.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="p-8 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 shadow-sm relative group">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-black text-xl mb-6 group-hover:scale-110 transition-transform">
+                            01
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Discover & Filter</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Search our curated directory across AI, music festivals, design sprints, and entrepreneur summits. Track live countdown timers and remaining capacity.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="p-8 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 shadow-sm relative group">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center font-black text-xl mb-6 group-hover:scale-110 transition-transform">
+                            02
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Instant Validation</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Select your ticket tier and complete the streamlined registration form with client-side JavaScript validation, preventing errors before submission.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="p-8 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 shadow-sm relative group">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-xl mb-6 group-hover:scale-110 transition-transform">
+                            03
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Digital Pass & Sync</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Receive your verified boarding pass with barcode and ticket ID. Download printable PDF passes, export .ics calendar events, and manage bookings locally.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             Organizer Banner & Newsletter Section
+             ==================================================================== -->
+        <section class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 text-white p-8 sm:p-12 lg:p-16 relative overflow-hidden shadow-2xl">
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-indigo-200 mb-4 uppercase tracking-wider">
+                            Stay Informed
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Never Miss a Landmark Event Near You</h2>
+                        <p class="text-indigo-100 text-sm sm:text-base leading-relaxed mb-8">
+                            Subscribe for weekly curated event alerts, early-bird ticket discounts, and speaker announcements delivered directly to your inbox.
+                        </p>
+
+                        <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-md">
+                            <input type="email" required placeholder="Enter your work email address" class="px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder:text-indigo-200 text-sm focus:outline-none focus:ring-2 focus:ring-white">
+                            <button type="submit" class="px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-indigo-900 font-bold text-sm transition shadow-lg flex-shrink-0">
+                                Subscribe Free
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Decorative Background Spheres -->
+                    <div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-purple-500/20 blur-3xl pointer-events-none"></div>
+                    <div class="absolute right-40 top-0 w-60 h-60 rounded-full bg-indigo-500/20 blur-2xl pointer-events-none"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ====================================================================
+         Footer Section
+         ==================================================================== -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-14 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                
+                <!-- Brand Summary -->
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        </div>
+                        <span class="text-lg font-extrabold text-slate-900 dark:text-white">Event<span class="text-indigo-600 dark:text-indigo-400">Pulse</span></span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Modern responsive event management platform crafted with semantic HTML5, CSS3, JavaScript, and Tailwind CSS. Built for the K Explore Web Designing Challenge.
+                    </p>
+                    <div class="flex items-center gap-3 text-slate-400">
+                        <a href="https://github.com" target="_blank" rel="noreferrer" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="GitHub Repository">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noreferrer" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Twitter">
+                            <i data-lucide="twitter" class="w-4 h-4"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noreferrer" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="LinkedIn">
+                            <i data-lucide="linkedin" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Platform</h4>
+                    <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+                        <li><a href="#home" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Home Discovery</a></li>
+                        <li><a href="#featured" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Featured Events</a></li>
+                        <li><a href="#explore-events" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Browse Catalog</a></li>
+                        <li><a href="#how-it-works" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">How It Works</a></li>
+                    </ul>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Popular Genres</h4>
+                    <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+                        <li><a href="#explore-events" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Artificial Intelligence & Tech</a></li>
+                        <li><a href="#explore-events" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Electronic Music Festivals</a></li>
+                        <li><a href="#explore-events" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Fintech & Venture Capital</a></li>
+                        <li><a href="#explore-events" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Design Systems Workshops</a></li>
+                    </ul>
+                </div>
+
+                <!-- Challenge Attribution -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Submission Details</h4>
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs space-y-2">
+                        <div class="text-slate-700 dark:text-slate-300 font-semibold">K Explore – Web Designing</div>
+                        <div class="text-slate-500">Responsive Event Management Platform</div>
+                        <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-[10px]">
+                            <i data-lucide="check" class="w-3 h-3"></i> BONUS CHALLENGES MET
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright & Attributions -->
+            <div class="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <p>&copy; 2026 EventPulse Platform. All rights reserved.</p>
+                <p class="flex items-center gap-1">
+                    Engineered with HTML5, CSS3, Tailwind CSS & JavaScript
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 z-30 p-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl opacity-0 pointer-events-none transition-all duration-300 focus:outline-none" aria-label="Back to top">
+        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+    </button>
+
+    <!-- ====================================================================
+         Modal 1: Event Details Modal
+         ==================================================================== -->
+    <div id="event-details-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div id="details-modal-content" class="glass-card animate-modal-in rounded-3xl overflow-hidden max-w-3xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl my-8 bg-white dark:bg-slate-900">
+            <!-- Dynamically populated by app.js -->
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         Modal 2: Event Registration Form Modal
+         ==================================================================== -->
+    <div id="register-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="glass-card animate-modal-in rounded-3xl overflow-hidden max-w-xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl my-8 bg-white dark:bg-slate-900 p-6 sm:p-8">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-6">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Register for Event</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Please provide valid attendee details to reserve your ticket.</p>
+                </div>
+                <button id="close-register-modal" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Pre-selected Event Summary Preview -->
+            <div id="register-event-summary"></div>
+
+            <!-- Form -->
+            <form id="registration-form" class="space-y-4" novalidate>
+                
+                <!-- Full Name Field -->
+                <div>
+                    <label for="reg-name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Full Name <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="reg-name" required placeholder="e.g. Alex Henderson" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white transition">
+                    </div>
+                    <p id="reg-name-error" class="hidden text-xs text-rose-500 font-medium mt-1"></p>
+                </div>
+
+                <!-- Email Field -->
+                <div>
+                    <label for="reg-email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Email Address <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="email" id="reg-email" required placeholder="e.g. alex@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white transition">
+                    </div>
+                    <p id="reg-email-error" class="hidden text-xs text-rose-500 font-medium mt-1"></p>
+                </div>
+
+                <!-- Phone Field -->
+                <div>
+                    <label for="reg-phone" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Phone Number <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="phone" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="tel" id="reg-phone" required placeholder="e.g. +1 (555) 019-2834" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white transition">
+                    </div>
+                    <p id="reg-phone-error" class="hidden text-xs text-rose-500 font-medium mt-1"></p>
+                </div>
+
+                <!-- Tier & Ticket Count Selection -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="reg-ticket-tier" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                            Ticket Tier
+                        </label>
+                        <select id="reg-ticket-tier" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white">
+                            <option value="general">Standard Pass</option>
+                            <option value="vip">VIP All-Access (+50%)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="reg-ticket-count" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                            Tickets (Max 5)
+                        </label>
+                        <input type="number" id="reg-ticket-count" value="1" min="1" max="5" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white">
+                        <p id="reg-ticket-count-error" class="hidden text-xs text-rose-500 font-medium mt-1"></p>
+                    </div>
+                </div>
+
+                <!-- Dietary / Special Notes (Optional) -->
+                <div>
+                    <label for="reg-notes" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Dietary Preferences / Notes <span class="text-slate-400 font-normal">(Optional)</span>
+                    </label>
+                    <input type="text" id="reg-notes" placeholder="e.g. Vegetarian, Wheelchair access needed" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white">
+                </div>
+
+                <!-- Terms & Conditions Checkbox -->
+                <div class="pt-2">
+                    <label class="flex items-start gap-2.5 cursor-pointer text-xs text-slate-600 dark:text-slate-400">
+                        <input type="checkbox" id="reg-terms" required class="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500">
+                        <span>I agree to the <a href="#" class="text-indigo-600 dark:text-indigo-400 underline font-medium">Event Terms</a>, code of conduct, and consent to receive event itinerary updates.</span>
+                    </label>
+                    <p id="reg-terms-error" class="hidden text-xs text-rose-500 font-medium mt-1"></p>
+                </div>
+
+                <!-- Total & Submit Bar -->
+                <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
+                    <div>
+                        <div class="text-[11px] text-slate-400 uppercase tracking-wider">Estimated Total</div>
+                        <div id="total-price-summary" class="text-xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                            $0.00
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-register-btn" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition flex items-center gap-2">
+                        <span>Confirm Reservation</span>
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         Modal 3: Ticket Confirmation & Boarding Pass Modal
+         ==================================================================== -->
+    <div id="ticket-success-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="animate-modal-in max-w-xl w-full my-8">
+            
+            <!-- Confirmed Card Container -->
+            <div id="ticket-details-container">
+                <!-- Injected by app.js -->
+            </div>
+
+            <!-- Action Buttons below ticket -->
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-3 no-print">
+                <button id="print-ticket-btn" class="px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs shadow hover:bg-slate-800 dark:hover:bg-slate-100 transition flex items-center gap-2">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span>Print / Save as PDF</span>
+                </button>
+                <button id="download-ics-btn" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow transition flex items-center gap-2">
+                    <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                    <span>Add to Calendar (.ics)</span>
+                </button>
+                <button id="view-bookings-from-ticket" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold text-xs transition flex items-center gap-2">
+                    <i data-lucide="ticket" class="w-4 h-4"></i>
+                    <span>My Bookings</span>
+                </button>
+                <button id="close-ticket-modal" class="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition">
+                    Done
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         Modal 4: My Bookings & Manage Tickets Modal
+         ==================================================================== -->
+    <div id="bookings-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="glass-card animate-modal-in rounded-3xl overflow-hidden max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl my-8 bg-white dark:bg-slate-900 p-6 sm:p-8">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <i data-lucide="ticket" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">My Registered Bookings</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Stored securely in your local browser storage.</p>
+                    </div>
+                </div>
+                <button id="close-bookings-modal" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Empty State for Bookings -->
+            <div id="empty-bookings-state" class="hidden py-12 text-center">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="ticket-x" class="w-7 h-7"></i>
+                </div>
+                <h4 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">No Active Bookings Found</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">You haven't reserved any tickets yet. Explore upcoming events and claim your passes.</p>
+            </div>
+
+            <!-- Bookings List -->
+            <div id="bookings-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                <!-- Injected by app.js -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="js/events-data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

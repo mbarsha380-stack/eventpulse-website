@@ -1,0 +1,267 @@
+/* ==========================================================================
+   EventPulse - Core Stylesheet & Animations
+   Modern Neo-Glassmorphism, Micro-Interactions, and Print Styles
+   ========================================================================== */
+
+/* Custom Smooth Transitions */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Glassmorphism Classes */
+.glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.dark .glass-nav {
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.dark .glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+/* Gradient Mesh Backgrounds */
+.hero-gradient {
+    background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+}
+
+.dark .hero-gradient {
+    background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.22) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.15) 0%, transparent 50%);
+}
+
+/* Pulsating Animation for Live/Hot Badges */
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+}
+
+.pulse-indicator {
+    animation: pulse-ring 2s infinite ease-in-out;
+}
+
+/* Card Hover Elevation */
+.event-card {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-6px);
+}
+
+/* Modal Animations */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.animate-modal-in {
+    animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Digital Ticket Styles */
+.ticket-container {
+    position: relative;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.dark .ticket-container {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.ticket-notch-left, .ticket-notch-right {
+    position: absolute;
+    top: 60%;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #f8fafc;
+    z-index: 10;
+}
+
+.dark .ticket-notch-left, .dark .ticket-notch-right {
+    background-color: #0f172a;
+}
+
+.ticket-notch-left {
+    left: -12px;
+}
+
+.ticket-notch-right {
+    right: -12px;
+}
+
+.ticket-dashed-divider {
+    border-top: 2px dashed #cbd5e1;
+}
+
+.dark .ticket-dashed-divider {
+    border-top-color: #475569;
+}
+
+/* Barcode Simulation */
+.barcode-strip {
+    background: repeating-linear-gradient(
+        90deg,
+        #1e293b 0px,
+        #1e293b 2px,
+        transparent 2px,
+        transparent 5px,
+        #1e293b 5px,
+        #1e293b 9px,
+        transparent 9px,
+        transparent 11px,
+        #1e293b 11px,
+        #1e293b 14px,
+        transparent 14px,
+        transparent 18px
+    );
+    height: 48px;
+    width: 100%;
+}
+
+.dark .barcode-strip {
+    background: repeating-linear-gradient(
+        90deg,
+        #f8fafc 0px,
+        #f8fafc 2px,
+        transparent 2px,
+        transparent 5px,
+        #f8fafc 5px,
+        #f8fafc 9px,
+        transparent 9px,
+        transparent 11px,
+        #f8fafc 11px,
+        #f8fafc 14px,
+        transparent 14px,
+        transparent 18px
+    );
+}
+
+/* Toast Notification animations */
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+}
+
+.toast-enter {
+    animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-exit {
+    animation: toastSlideOut 0.25s ease-in forwards;
+}
+
+/* Print Stylesheet for Ticket Download/Print */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #printable-ticket-section, #printable-ticket-section * {
+        visibility: visible;
+    }
+    #printable-ticket-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
